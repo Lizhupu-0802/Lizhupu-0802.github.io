@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国民族节日时间线图 - GitHub Pages版</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .info-bar {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .info-bar .icon { font-size: 1.5rem; }
+        .info-bar .text { flex: 1; }
+        .info-bar .text h4 { color: #1565c0; margin-bottom: 5px; }
+        .info-bar .text p { color: #555; font-size: 0.9rem; }
+        
+        .upload-bar {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .upload-bar h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .upload-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        .upload-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .upload-btn:hover { background: #5a6fd6; }
+        .upload-btn.secondary {
+            background: #48bb78;
+        }
+        .upload-btn.secondary:hover {
+            background: #38a169;
+        }
+        .link-input {
+            flex: 1;
+            min-width: 300px;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .link-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 60px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 25px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, 
+                #e74c3c 0%, #e74c3c 8.33%,
+                #e67e22 8.33%, #e67e22 16.66%,
+                #f1c40f 16.66%, #f1c40f 25%,
+                #2ecc71 25%, #2ecc71 33.33%,
+                #1abc9c 33.33%, #1abc9c 41.66%,
+                #3498db 41.66%, #3498db 50%,
+                #9b59b6 50%, #9b59b6 58.33%,
+                #e84393 58.33%, #e84393 66.66%,
+                #fd79a8 66.66%, #fd79a8 75%,
+                #00b894 75%, #00b894 83.33%,
+                #0984e3 83.33%, #0984e3 91.66%,
+                #6c5ce7 91.66%, #6c5ce7 100%
+            );
+        }
+        
+        .month-section { margin-bottom: 40px; position: relative; }
+        .month-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .month-badge {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            position: absolute;
+            left: -45px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        .month-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-left: 20px;
+            color: #333;
+        }
+        
+        .month-1 .month-badge { background: #e74c3c; }
+        .month-2 .month-badge { background: #e67e22; }
+        .month-3 .month-badge { background: #f1c40f; }
+        .month-4 .month-badge { background: #2ecc71; }
+        .month-5 .month-badge { background: #1abc9c; }
+        .month-6 .month-badge { background: #3498db; }
+        .month-7 .month-badge { background: #9b59b6; }
+        .month-8 .month-badge { background: #e84393; }
+        .month-9 .month-badge { background: #fd79a8; }
+        .month-10 .month-badge { background: #00b894; }
+        .month-11 .month-badge { background: #0984e3; }
+        .month-12 .month-badge { background: #6c5ce7; }
+        
+        .festivals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 15px;
+        }
+        .festival-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            border-left: 4px solid;
+        }
+        .festival-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        
+        .month-1 .festival-card { border-left-color: #e74c3c; }
+        .month-2 .festival-card { border-left-color: #e67e22; }
+        .month-3 .festival-card { border-left-color: #f1c40f; }
+        .month-4 .festival-card { border-left-color: #2ecc71; }
+        .month-5 .festival-card { border-left-color: #1abc9c; }
+        .month-6 .festival-card { border-left-color: #3498db; }
+        .month-7 .festival-card { border-left-color: #9b59b6; }
+        .month-8 .festival-card { border-left-color: #e84393; }
+        .month-9 .festival-card { border-left-color: #fd79a8; }
+        .month-10 .festival-card { border-left-color: #00b894; }
+        .month-11 .festival-card { border-left-color: #0984e3; }
+        .month-12 .festival-card { border-left-color: #6c5ce7; }
+        
+        .festival-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .ethnic-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .ethnic-tag {
+            background: #f0f0f0;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: #555;
+        }
+        .festival-date {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .festival-activity {
+            color: #888;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+        
+        .festival-image {
+            width: 100%;
+            height: 150px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            border: 2px dashed #ddd;
+        }
+        .festival-image:hover { border-color: #667eea; background: #f5f7ff; }
+        .festival-image.has-image { border: none; }
+        .festival-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .image-placeholder {
+            text-align: center;
+            color: #999;
+            font-size: 0.9rem;
+        }
+        .image-placeholder-icon { font-size: 2rem; margin-bottom: 5px; }
+        .image-actions {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .festival-image:hover .image-actions { opacity: 1; }
+        .action-btn {
+            background: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+        .action-btn:hover { background: #667eea; color: white; }
+        
+        .viewer-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .viewer-modal.active { display: flex; }
+        .viewer-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .viewer-image {
+            max-width: 80vw;
+            max-height: 80vh;
+            object-fit: contain;
+        }
+        .viewer-close {
+            position: absolute;
+            top: -50px; right: 0;
+            color: white;
+            font-size: 2.5rem;
+            cursor: pointer;
+            opacity: 0.8;
+        }
+        .viewer-close:hover { opacity: 1; }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+        }
+        .modal-header {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .modal-close {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #888;
+        }
+        .modal-close:hover { color: #333; }
+        
+        .imgur-instruction {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .imgur-instruction h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .imgur-instruction ol {
+            padding-left: 20px;
+            color: #555;
+        }
+        .imgur-instruction li {
+            margin-bottom: 8px;
+        }
+        .imgur-instruction a {
+            color: #667eea;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎊 中国民族节日时间线图</h1>
+        <p class="subtitle">相同名称的节日已合并，所有人都能看到共享的图片</p>
+        
+        <div class="info-bar">
+            <span class="icon">💡</span>
+            <div class="text">
+                <h4>如何使用图片共享功能</h4>
+                <p>1. 点击下方按钮上传图片到免费图床 → 2. 复制生成的图片链接 → 3. 粘贴到任意节日卡片的输入框中</p>
+            </div>
+        </div>
+        
+        <div class="upload-bar">
+            <h3>📤 图片上传方式（选择一种）</h3>
+            
+            <div class="upload-options">
+                <span>方式1：</span>
+                <button class="upload-btn" onclick="openImgurUpload()">
+                    📤 上传到 Imgur
+                </button>
+                <span style="color:#888">或</span>
+                <button class="upload-btn secondary" onclick="openSMMSUpload()">
+                    📤 上传到 SM.MS
+                </button>
+            </div>
+            
+            <div class="upload-options">
+                <span>方式2：直接粘贴图片链接</span>
+                <input type="text" class="link-input" id="globalImageUrl" 
+                       placeholder="https://example.com/image.jpg （粘贴后按回车）">
+            </div>
+        </div>
+
+        <div class="timeline" id="timeline"></div>
+        
+        <footer>
+            <p>数据来源：快手民族节日年历</p>
+            <p>🇨🇳 传承民族文化 · 共享多彩中华</p>
+        </footer>
+    </div>
+    
+    <!-- 图片查看器 -->
+    <div class="viewer-modal" id="viewerModal" onclick="closeViewer()">
+        <div class="viewer-content" onclick="event.stopPropagation()">
+            <span class="viewer-close" onclick="closeViewer()">&times;</span>
+            <img class="viewer-image" id="viewerImage" src="" alt="查看图片">
+        </div>
+    </div>
+    
+    <!-- Imgur上传说明 -->
+    <div class="modal" id="imgurModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div class="modal-header">📤 Imgur 图床上传指南</div>
+            <div class="imgur-instruction">
+                <h4>推荐步骤：</h4>
+                <ol>
+                    <li>访问 <a href="https://imgur.com/upload" target="_blank">imgur.com/upload</a></li>
+                    <li>选择并上传你的图片（无需注册）</li>
+                    <li>上传完成后，右键图片选择「复制图片地址」</li>
+                    <li>回到本页面，粘贴链接到对应节日卡片的输入框中</li>
+                    <li>按回车确认，所有人都能看到这张图片！</li>
+                </ol>
+                <p style="color:#888; font-size:0.85rem; margin-top:10px;">
+                    💡 提示：Imgur 是全球最大的免费图床，图片永久有效
+                </p>
+            </div>
+            <button class="upload-btn" onclick="window.open('https://imgur.com/upload', '_blank')">
+                🌐 打开 Imgur 上传页面
+            </button>
+        </div>
+    </div>
+    
+    <!-- SM.MS上传说明 -->
+    <div class="modal" id="smmsModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div class="modal-header">📤 SM.MS 图床上传指南</div>
+            <div class="imgur-instruction">
+                <h4>推荐步骤：</h4>
+                <ol>
+                    <li>访问 <a href="https://sm.ms" target="_blank">sm.ms</a>（国内访问更快）</li>
+                    <li>选择并上传你的图片（无需注册）</li>
+                    <li>复制生成的「Image URL」链接</li>
+                    <li>回到本页面，粘贴链接到对应节日卡片的输入框中</li>
+                    <li>按回车确认，所有人都能看到这张图片！</li>
+                </ol>
+                <p style="color:#888; font-size:0.85rem; margin-top:10px;">
+                    💡 提示：SM.MS 是国内图床，访问速度更快
+                </p>
+            </div>
+            <button class="upload-btn secondary" onclick="window.open('https://sm.ms', '_blank')">
+                🌐 打开 SM.MS 上传页面
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 数据（与之前相同，略）
+        const rawData = {
+            1: [
+                {name: "藏历农家新年", ethnic: "藏族(后藏地区)", date: "藏历12月1日", activity: "吃\"古突\"、合家团聚、准备年货"},
+                {name: "俄罗斯族圣诞节", ethnic: "俄罗斯族", date: "公历1月7日", activity: "纪念耶稣降生、教堂礼拜"},
+                {name: "独龙族卡雀哇", ethnic: "独龙族", date: "农历腊月中", activity: "祭山神仪式、唱歌跳舞"},
+            ],
+            2: [
+                {name: "春节/白节", ethnic: "蒙古族", date: "农历正月初一", activity: "吃手扒肉、点篝火、敬迎新酒、互赠哈达"},
+                {name: "春节", ethnic: "满族", date: "农历正月初一", activity: "农历新年、吃黏高粱米饭"},
+                {name: "苗年", ethnic: "苗族", date: "农历正月", activity: "最隆重的节日，相当于汉族春节"},
+                {name: "阔什节", ethnic: "傈僳族", date: "农历正月初一至十五", activity: "岁首之意，相当于汉族春节"},
+                {name: "赶年", ethnic: "土家族", date: "农历腊月二十九", activity: "比汉族提前一天过年"},
+                {name: "添仓节", ethnic: "满族", date: "农历正月二十五", activity: "煮黏高粱米饭、祈求丰衣足食"},
+                {name: "花炮节", ethnic: "侗族(三江)", date: "农历正月初三", activity: "抢花炮、唱侗戏、演彩调、吹芦笙"},
+                {name: "春社日", ethnic: "仫佬族", date: "农历二月初二", activity: "祭祀社王"},
+                {name: "锁龙节", ethnic: "满族", date: "农历二月初二", activity: "祈求平安"},
+                {name: "三朵节", ethnic: "纳西族", date: "农历二月初八", activity: "祭祀三朵神、本民族最大保护神"},
+                {name: "刀杆节", ethnic: "傈僳族", date: "农历二月初八", activity: "爬刀杆、丢烟包活动"},
+                {name: "能仙节", ethnic: "景颇族", date: "农历二月十日", activity: "青年男女聚会"},
+                {name: "花炮节", ethnic: "侗族(梅林)", date: "农历二月初二", activity: "抢花炮活动"},
+                {name: "旭独龙节", ethnic: "珞巴族(西部)", date: "藏历二月", activity: "巫师挥舞粘满五彩羽毛的木棍、祈求丰收"},
+            ],
+            3: [
+                {name: "三月三", ethnic: "壮族", date: "农历三月初三", activity: "祭龙节、对歌活动"},
+                {name: "三月三", ethnic: "黎族", date: "农历三月初三", activity: "最隆重的节日之一"},
+                {name: "三月三", ethnic: "畲族", date: "农历三月初三", activity: "传统节日"},
+                {name: "三月三", ethnic: "布依族", date: "农历三月初三", activity: "浪哨(唱歌)、互甩糠包"},
+                {name: "三月三", ethnic: "土族", date: "农历三月初三", activity: "佑宁寺官经会"},
+                {name: "花炮节", ethnic: "侗族(富禄)", date: "农历三月初三", activity: "抢花炮活动"},
+                {name: "仙女节/鲜花节", ethnic: "怒族", date: "农历三月十五至十七", activity: "祭祀活动"},
+                {name: "厚南节", ethnic: "布朗族", date: "阳历4月13-15日", activity: "相互泼水、迎接太阳"},
+                {name: "播种节", ethnic: "佤族", date: "农历三月十五日前后", activity: "杀鸡看卦、祭祀谷魂、唱歌对调"},
+                {name: "纳吾鲁孜节", ethnic: "哈萨克族", date: "公历3月22日前后", activity: "送旧迎新"},
+                {name: "诺鲁孜节", ethnic: "乌孜别克族", date: "春分时节", activity: "新年庆祝"},
+                {name: "迄脱乞迪尔节", ethnic: "塔吉克族", date: "三月", activity: "迎接新年"},
+                {name: "达努节", ethnic: "瑶族", date: "农历五月二十九日", activity: "纪念创世女神密洛陀"},
+                {name: "祭雷神", ethnic: "壮族", date: "农历三月", activity: "祭祀雷神"},
+                {name: "巴罗提节/灯节", ethnic: "塔吉克族", date: "斋月前两个月", activity: "最隆重的宗教节日"},
+                {name: "唱哈节", ethnic: "京族(澫尾、巫头)", date: "农历六月初十", activity: "祀神、祭祖、文娱、乡饮"},
+            ],
+            4: [
+                {name: "泼水节", ethnic: "傣族", date: "公历4月13-15日", activity: "泼水祝福、浴佛、丢包、赛龙舟"},
+                {name: "泼水节", ethnic: "德昂族", date: "公历4月", activity: "关门节、开门节、泼水祝福"},
+                {name: "转山会/沐佛节", ethnic: "藏族", date: "农历四月初八", activity: "敬山神、燃香祈祷、转山祭神、赛马射箭"},
+                {name: "萨噶达瓦节", ethnic: "藏族", date: "藏历四月十五", activity: "纪念释迦牟尼成道"},
+                {name: "龙王节", ethnic: "壮族", date: "农历四月", activity: "祭龙、祈求人畜平安"},
+                {name: "土族四月四", ethnic: "土族", date: "农历四月初四", activity: "宗教活动"},
+                {name: "布依族四月八", ethnic: "布依族", date: "农历四月初八", activity: "庆祝活动"},
+            ],
+            5: [
+                {name: "采花节", ethnic: "藏族(南坪县博峪)", date: "农历五月初五", activity: "上山采花纪念莲芝姑娘、歌舞活动"},
+                {name: "女儿节", ethnic: "藏族(甘肃文县)", date: "农历五月初四、初五", activity: "姑娘采茶对歌、互相敬酒"},
+                {name: "端午节", ethnic: "毛南族", date: "农历五月初五", activity: "找草药"},
+                {name: "端午节", ethnic: "拉祜族", date: "农历五月初五", activity: "传统节日"},
+                {name: "唱哈节", ethnic: "京族(山心)", date: "农历八月初十", activity: "祀神、祭祖、文娱、乡饮"},
+                {name: "矻扎扎节", ethnic: "哈尼族", date: "农历五月", activity: "历时3-5天、庆典隆重"},
+                {name: "耶苦扎", ethnic: "哈尼族(西双版纳)", date: "农历六月第一个属牛日", activity: "赛马、打陀螺、跳竹筒舞"},
+                {name: "乌日贡节", ethnic: "赫哲族", date: "农历五月十五日", activity: "文体活动庆祝丰收"},
+                {name: "虫王节", ethnic: "满族(岫岩、凤城)", date: "农历六月初六", activity: "到虫王庙朝拜、杀猪祭祀"},
+                {name: "祭社", ethnic: "仫佬族", date: "农历五月", activity: "全村到村庙杀猪宰羊祭祀社王"},
+                {name: "磨刀节", ethnic: "保安族", date: "农历五月", activity: "保安族传统节日"},
+            ],
+            6: [
+                {name: "六月六", ethnic: "布依族", date: "农历六月初六", activity: "庆祝活动"},
+                {name: "祭牛节", ethnic: "侗族", date: "农历六月初六", activity: "不准使用牛、祭祀牛神"},
+                {name: "火把节", ethnic: "彝族", date: "农历六月二十四日", activity: "点火把、歌舞、摔跤、斗牛"},
+                {name: "火把节", ethnic: "纳西族", date: "农历六月二十四日", activity: "西南多民族共有的火把节"},
+                {name: "火把节", ethnic: "拉祜族", date: "农历六月二十四日", activity: "传统节日"},
+                {name: "查白歌节", ethnic: "布依族", date: "农历六月二十一日", activity: "青年男女聚集在查白场举行歌会"},
+                {name: "阿包念/捉蚂蚱节", ethnic: "哈尼族", date: "农历六月二十四后", activity: "到田中巡视、灭除蝗虫"},
+                {name: "吃新节", ethnic: "侗族", date: "农历六月", activity: "吃新米、停止生产活动"},
+                {name: "特毛且/打铁节", ethnic: "基诺族", date: "农历十二月", activity: "纪念铁器使用起源"},
+                {name: "沃其贝节", ethnic: "达斡尔族(新疆塔城)", date: "每年6月8日", activity: "祭拜、祈福、聚会、欢歌起舞"},
+                {name: "祭田公", ethnic: "壮族", date: "农历六月", activity: "栽完秧后祭祀田公"},
+            ],
+            7: [
+                {name: "那达慕", ethnic: "蒙古族", date: "农历七月初", activity: "男子三竞技(摔跤、赛马、射箭)、文艺演出"},
+                {name: "望果节", ethnic: "藏族", date: "农历七月", activity: "背着经卷转绕田间、赛马射箭、预祝丰收"},
+                {name: "雪顿节/藏戏节", ethnic: "藏族", date: "藏历七月一日", activity: "喝酸奶、演藏戏、哲蚌晒佛、逛林卡"},
+                {name: "七月七", ethnic: "壮族", date: "农历七月", activity: "接祖"},
+                {name: "目瑙纵歌节", ethnic: "景颇族", date: "农历七月", activity: "国家级非物质文化遗产"},
+            ],
+            8: [
+                {name: "马奶节", ethnic: "蒙古族(锡林郭勒、鄂尔多斯)", date: "农历八月下旬", activity: "赞颂骏马、喝马奶酒、赛马"},
+                {name: "新米节", ethnic: "佤族", date: "农历八月中旬", activity: "采摘谷穗、杀鸡宰猪、过滤水酒"},
+                {name: "八月月圆节", ethnic: "拉祜族", date: "农历八月十五", activity: "节日庆祝"},
+                {name: "端节", ethnic: "水族", date: "水历十二月至次年二月", activity: "辞旧迎新、庆贺丰收、祭祀祖先"},
+                {name: "耶苦扎", ethnic: "哈尼族", date: "农历六月第一个属牛日", activity: "节期3-5天、赛马打陀螺"},
+                {name: "祭土地", ethnic: "壮族", date: "农历八月", activity: "各寨祭献土地"},
+                {name: "祭祖节", ethnic: "藏族", date: "农历八月", activity: "祭祀祖先"},
+            ],
+            9: [
+                {name: "中秋节", ethnic: "拉祜族", date: "农历八月十五", activity: "节日庆祝"},
+                {name: "祭献土地", ethnic: "壮族", date: "农历八月", activity: "各寨祭献土地"},
+                {name: "吃新节", ethnic: "苗族", date: "农历九月", activity: "庆祝新米收获"},
+            ],
+            10: [
+                {name: "羌历新年/日羌节", ethnic: "羌族", date: "农历十月初一", activity: "最重要的传统节日"},
+                {name: "彝年", ethnic: "彝族(凉山)", date: "农历十月上旬", activity: "根据彝族历法、择吉日举行"},
+                {name: "苗年", ethnic: "苗族", date: "农历十月", activity: "秋后举行、最隆重的节日"},
+                {name: "扎勒特/十月年", ethnic: "哈尼族", date: "农历十月", activity: "哈尼族最大节日"},
+                {name: "好收/黄饭节", ethnic: "哈尼族(元江县那婼)", date: "农历二月", activity: "祭献仓摩米天神的使者布谷鸟"},
+                {name: "白来日追/吉祥天母节", ethnic: "藏族", date: "藏历十月十五日", activity: "妇女梳妆打扮、焚香祈祷"},
+                {name: "送祖", ethnic: "壮族", date: "农历十二月", activity: "送祖先"},
+                {name: "侗年", ethnic: "侗族", date: "农历10月底或11月初", activity: "择日过年"},
+                {name: "吃新节", ethnic: "仡佬族", date: "农历十月", activity: "吃新、庆祝丰收"},
+            ],
+            11: [
+                {name: "侗年", ethnic: "侗族", date: "农历10月底或11月初", activity: "择日过年"},
+                {name: "盘王节", ethnic: "瑶族", date: "农历十一月", activity: "祭祀盘瓠王"},
+                {name: "祭山会", ethnic: "羌族", date: "农历十一月", activity: "祭山大典、山神会"},
+                {name: "苗年", ethnic: "苗族", date: "农历十一月", activity: "部分地区苗年"},
+            ],
+            12: [
+                {name: "藏历新年/洛萨", ethnic: "藏族", date: "藏历正月初一", activity: "抢水比赛、吃琪玛、敬青稞酒"},
+                {name: "卡雀哇/德里哇", ethnic: "独龙族", date: "农历腊月中", activity: "祭山神、唱歌跳舞"},
+                {name: "祭谷神/汝为", ethnic: "怒族", date: "农历十二月二十九日", activity: "祭祀谷神、祈祷保佑"},
+                {name: "祭灶神", ethnic: "赫哲族", date: "农历十二月二十三", activity: "祭祀灶神"},
+                {name: "颁金节", ethnic: "满族", date: "农历十月十三日", activity: "满族命名纪念日"},
+                {name: "新火节", ethnic: "佤族", date: "农历十二月或次年一月", activity: "送旧火、钻木取新火"},
+                {name: "特毛且/打铁节", ethnic: "基诺族", date: "农历十二月", activity: "纪念铁器使用起源"},
+                {name: "送灶王爷", ethnic: "仫佬族", date: "农历十二月二十四", activity: "送灶王爷上天"},
+            ]
+        };
+
+        const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
+
+        // 合并相同名称的节日
+        function mergeFestivals() {
+            const merged = {};
+            for (let month = 1; month <= 12; month++) {
+                merged[month] = {};
+                const festivals = rawData[month];
+                festivals.forEach(f => {
+                    const key = f.name;
+                    if (!merged[month][key]) {
+                        merged[month][key] = {
+                            name: f.name,
+                            ethnics: [f.ethnic],
+                            date: f.date,
+                            activities: [f.activity]
+                        };
+                    } else {
+                        if (!merged[month][key].ethnics.includes(f.ethnic)) {
+                            merged[month][key].ethnics.push(f.ethnic);
+                        }
+                        if (!merged[month][key].activities.includes(f.activity)) {
+                            merged[month][key].activities.push(f.activity);
+                        }
+                    }
+                });
+            }
+            return merged;
+        }
+
+        const festivalData = mergeFestivals();
+
+        // 从 URL hash 加载预设图片
+        function loadImagesFromHash() {
+            const hash = window.location.hash.slice(1);
+            if (!hash) return;
+            
+            try {
+                const images = JSON.parse(decodeURIComponent(hash));
+                Object.entries(images).forEach(([key, url]) => {
+                    const [month, index] = key.split('-');
+                    const element = document.getElementById(`img-${month}-${index}`);
+                    if (element && url) {
+                        displayImage(parseInt(month), parseInt(index), url);
+                    }
+                });
+            } catch (e) {
+                console.log('No preset images');
+            }
+        }
+
+        // 生成时间线
+        function generateTimeline() {
+            const timeline = document.getElementById('timeline');
+            let html = '';
+            
+            for (let month = 1; month <= 12; month++) {
+                const festivals = Object.values(festivalData[month]);
+                html += `
+                    <div class="month-section month-${month}">
+                        <div class="month-header">
+                            <div class="month-badge">${month}</div>
+                            <div class="month-title">${monthNames[month-1]}</div>
+                        </div>
+                        <div class="festivals-grid">
+                            ${festivals.map((f, i) => `
+                                <div class="festival-card" data-id="${month}-${i}">
+                                    <div class="festival-name">${f.name}</div>
+                                    <div class="ethnic-tags">
+                                        ${f.ethnics.map(e => `<span class="ethnic-tag">${e}</span>`).join('')}
+                                    </div>
+                                    <div class="festival-date">📅 ${f.date}</div>
+                                    <div class="festival-activity">${f.activities.join('；')}</div>
+                                    <div class="festival-image" id="img-${month}-${i}">
+                                        <div class="image-placeholder" onclick="showInput('${month}', ${i})">
+                                            <div class="image-placeholder-icon">🖼️</div>
+                                            <div>点击添加图片链接</div>
+                                        </div>
+                                    </div>
+                                    <div id="input-${month}-${i}" style="display:none; margin-top:10px;">
+                                        <input type="text" class="link-input" 
+                                               placeholder="粘贴图片链接，按回车确认" 
+                                               onkeydown="handleInput(event, '${month}', ${i})" 
+                                               style="width:100%;">
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            timeline.innerHTML = html;
+            loadImagesFromHash();
+        }
+
+        function showInput(month, index) {
+            const inputDiv = document.getElementById(`input-${month}-${index}`);
+            inputDiv.style.display = 'block';
+            inputDiv.querySelector('input').focus();
+        }
+
+        function handleInput(event, month, index) {
+            if (event.key === 'Enter') {
+                const url = event.target.value.trim();
+                if (url) {
+                    displayImage(month, index, url);
+                    updateHash(month, index, url);
+                }
+                document.getElementById(`input-${month}-${index}`).style.display = 'none';
+            }
+        }
+
+        function displayImage(month, index, url) {
+            const element = document.getElementById(`img-${month}-${index}`);
+            if (!element) return;
+            
+            element.innerHTML = `
+                <img src="${url}" alt="节日图片" onclick="event.stopPropagation(); viewImage('${url}')">
+                <div class="image-actions">
+                    <button class="action-btn" onclick="event.stopPropagation(); viewImage('${url}')">🔍 查看</button>
+                    <button class="action-btn" onclick="event.stopPropagation(); changeImage('${month}', ${index})">🔄 更换</button>
+                    <button class="action-btn" onclick="event.stopPropagation(); removeImage('${month}', ${index})">🗑️ 删除</button>
+                </div>
+            `;
+            element.classList.add('has-image');
+        }
+
+        function changeImage(month, index) {
+            const element = document.getElementById(`img-${month}-${index}`);
+            element.innerHTML = `
+                <div class="image-placeholder" onclick="showInput('${month}', ${index})">
+                    <div class="image-placeholder-icon">🖼️</div>
+                    <div>点击添加图片链接</div>
+                </div>
+            `;
+            element.classList.remove('has-image');
+            showInput(month, index);
+        }
+
+        function removeImage(month, index) {
+            const element = document.getElementById(`img-${month}-${index}`);
+            element.innerHTML = `
+                <div class="image-placeholder" onclick="showInput('${month}', ${index})">
+                    <div class="image-placeholder-icon">🖼️</div>
+                    <div>点击添加图片链接</div>
+                </div>
+            `;
+            element.classList.remove('has-image');
+            updateHash(month, index, null);
+        }
+
+        // 更新 URL hash，保存图片状态
+        let currentImages = {};
+        function updateHash(month, index, url) {
+            const key = `${month}-${index}`;
+            if (url) {
+                currentImages[key] = url;
+            } else {
+                delete currentImages[key];
+            }
+            
+            const hash = encodeURIComponent(JSON.stringify(currentImages));
+            window.location.hash = hash;
+        }
+
+        function viewImage(src) {
+            const viewer = document.getElementById('viewerModal');
+            const viewerImg = document.getElementById('viewerImage');
+            viewerImg.src = src;
+            viewer.classList.add('active');
+        }
+
+        function closeViewer() {
+            document.getElementById('viewerModal').classList.remove('active');
+        }
+
+        // 全局输入框
+        document.getElementById('globalImageUrl').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const url = this.value.trim();
+                if (url) {
+                    // 找到第一个没有图片的卡片
+                    for (let month = 1; month <= 12; month++) {
+                        const festivals = Object.values(festivalData[month]);
+                        for (let i = 0; i < festivals.length; i++) {
+                            const element = document.getElementById(`img-${month}-${i}`);
+                            if (!element.classList.contains('has-image')) {
+                                displayImage(month, i, url);
+                                updateHash(month, i, url);
+                                this.value = '';
+                                return;
+                            }
+                        }
+                    }
+                    alert('所有节日卡片已有图片！');
+                }
+            }
+        });
+
+        // 模态框控制
+        function openImgurUpload() {
+            document.getElementById('imgurModal').classList.add('active');
+        }
+
+        function openSMMSUpload() {
+            document.getElementById('smmsModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+        }
+
+        // 点击模态框外部关闭
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) closeModal();
+            });
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeViewer();
+                closeModal();
+            }
+        });
+
+        // 初始化
+        generateTimeline();
+    </script>
+<script type="text/javascript" src="/accessproxy_statics/h5_fp.js" defer></script>
+<script type="text/javascript" src="/accessproxy_statics/wm.js" defer></script>
+</body>
+</html>
